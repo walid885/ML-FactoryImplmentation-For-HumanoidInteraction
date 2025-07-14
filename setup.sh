@@ -58,6 +58,6 @@ EOF
 # Install directly to base environment
 echo "Installing requirements to base environment..."
 pip install --upgrade pip
-pip install -r requirements.txt
+pip install -r req.txt
 
 echo "Setup complete! Ready to use with base environment."

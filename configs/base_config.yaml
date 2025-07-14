@@ -1,0 +1,19 @@
+training:
+  num_episodes: 1000
+  max_steps_per_episode: 1000
+  eval_frequency: 100
+  save_frequency: 500
+
+environment:
+  name: "HumanoidBulletEnv-v0"
+  render_mode: null
+
+logging:
+  log_dir: "./logs"
+  tensorboard: true
+  mlflow: true
+  wandb: false
+
+model:
+  save_dir: "./models"
+  checkpoint_frequency: 1000
