@@ -1,0 +1,108 @@
+# configs/algorithm_configs.yaml
+# Configuration examples for all implemented algorithms
+
+# PPO (Proximal Policy Optimization) - Works with discrete and continuous actions
+ppo:
+  learning_rate: 3e-4
+  gamma: 0.99
+  eps_clip: 0.2
+  epochs: 4
+  batch_size: 256
+  num_workers: 6
+  gae_lambda: 0.95
+  value_loss_coef: 0.5
+  entropy_coef: 0.01
+  max_grad_norm: 0.5
+  recommended_env: "CartPole-v1"
+  action_space: "discrete"
+
+# DDPG (Deep Deterministic Policy Gradient) - Continuous actions only
+ddpg:
+  lr_actor: 1e-4
+  lr_critic: 1e-3
+  gamma: 0.99
+  tau: 0.005
+  batch_size: 256
+  buffer_size: 1000000
+  noise_std: 0.1
+  noise_decay: 0.995
+  recommended_env: "Pendulum-v1"
+  action_space: "continuous"
+
+# TD3 (Twin Delayed Deep Deterministic Policy Gradient) - Continuous actions only
+td3:
+  lr_actor: 3e-4
+  lr_critic: 3e-4
+  gamma: 0.99
+  tau: 0.005
+  batch_size: 256
+  buffer_size: 1000000
+  policy_noise: 0.2
+  noise_clip: 0.5
+  policy_freq: 2
+  exploration_noise: 0.1
+  recommended_env: "Pendulum-v1"
+  action_space: "continuous"
+
+# SAC (Soft Actor-Critic) - Continuous actions only
+sac:
+  lr_actor: 3e-4
+  lr_critic: 3e-4
+  lr_alpha: 3e-4
+  gamma: 0.99
+  tau: 0.005
+  batch_size: 256
+  buffer_size: 1000000
+  automatic_entropy_tuning: true
+  alpha: 0.2  # Used if automatic_entropy_tuning is false
+  recommended_env: "Pendulum-v1"
+  action_space: "continuous"
+
+# Environment recommendations by algorithm type
+environments:
+  discrete_action:
+    - "CartPole-v1"
+    - "LunarLander-v2"
+    - "Acrobot-v1"
+    - "MountainCar-v0"
+  
+  continuous_action:
+    - "Pendulum-v1"
+    - "LunarLanderContinuous-v2"
+    - "BipedalWalker-v3"
+    - "MountainCarContinuous-v0"
+    - "HalfCheetah-v4"
+    - "Hopper-v4"
+    - "Walker2d-v4"
+    - "Ant-v4"
+    - "Humanoid-v4"
+
+# Performance characteristics (approximate)
+performance:
+  ppo:
+    complexity: "Medium"
+    sample_efficiency: "Medium"
+    speed: "Fast"
+    stability: "Good"
+    best_for: "General purpose, discrete actions"
+  
+  ddpg:
+    complexity: "Medium"
+    sample_efficiency: "High"
+    speed: "Fast"
+    stability: "Medium"
+    best_for: "Continuous control, deterministic policies"
+  
+  td3:
+    complexity: "High"
+    sample_efficiency: "High"
+    speed: "Medium"
+    stability: "Good"
+    best_for: "Continuous control, improved DDPG"
+  
+  sac:
+    complexity: "High"
+    sample_efficiency: "Medium"
+    speed: "Slow"
+    stability: "Good"
+    best_for: "Continuous control, exploration"
