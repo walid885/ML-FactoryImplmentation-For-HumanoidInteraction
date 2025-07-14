@@ -4,7 +4,7 @@ from pathlib import Path
 import time
 import os
 import gymnasium as gym
-
+import numpy as np 
 # Add src to path - FIXED
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root / "src"))
@@ -55,7 +55,10 @@ def test_algorithm(algorithm_name, algorithm_class, config, env_name="Pendulum-v
         env = gym.make(env_name)
         state, _ = env.reset()
         action = agent.predict(state)
-        print(f"✓ Prediction works - Action shape: {action.shape}")
+        if isinstance(action, (int, np.integer)):
+            print(f"✓ Prediction works - Action (discrete): {action}")
+        else:
+            print(f"✓ Prediction works - Action shape: {action.shape}")
         env.close()
         
         # Test save/load
