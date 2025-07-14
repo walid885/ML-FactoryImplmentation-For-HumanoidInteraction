@@ -263,10 +263,16 @@ class SACAlgorithm(RLAlgorithmBase):
         
         # Need to initialize networks first
         if not self.networks_initialized:
-            # Try to infer dimensions from saved model
-            dummy_state = torch.randn(1, 4)  # Assume CartPole for testing
-            dummy_action = torch.randn(1, 1)
-            self._initialize_networks(4, 1, 1.0)
+            # Infer dimensions from saved model weights
+            actor_weight = checkpoint['actor_state_dict']['net.0.weight']
+            state_dim = actor_weight.shape[1]  # Input dimension
+            
+            # Find action dimension from mean layer
+            mean_weight = checkpoint['actor_state_dict']['mean.weight']
+            action_dim = mean_weight.shape[0]  # Output dimension
+            
+            # Initialize with inferred dimensions
+            self._initialize_networks(state_dim, action_dim, 1.0)
         
         self.actor.load_state_dict(checkpoint['actor_state_dict'])
         self.critic.load_state_dict(checkpoint['critic_state_dict'])

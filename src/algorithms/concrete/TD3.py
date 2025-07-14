@@ -234,10 +234,23 @@ class TD3Algorithm(RLAlgorithmBase):
         
         # Need to initialize networks first
         if not self.networks_initialized:
-            # Try to infer dimensions from saved model
-            dummy_state = torch.randn(1, 4)  # Assume CartPole for testing
-            dummy_action = torch.randn(1, 1)
-            self._initialize_networks(4, 1, 1.0)
+            # Infer dimensions from saved model weights
+            actor_weight = checkpoint['actor_state_dict']['net.0.weight']
+            state_dim = actor_weight.shape[1]  # Input dimension
+            
+            # Find action dimension from final layer
+            final_layer_key = None
+            for key in checkpoint['actor_state_dict'].keys():
+                if 'net.' in key and 'weight' in key:
+                    final_layer_key = key
+            
+            if final_layer_key:
+                action_dim = checkpoint['actor_state_dict'][final_layer_key].shape[0]
+            else:
+                action_dim = 1  # Default fallback
+            
+            # Initialize with inferred dimensions
+            self._initialize_networks(state_dim, action_dim, 1.0)
         
         self.actor.load_state_dict(checkpoint['actor_state_dict'])
         self.critic.load_state_dict(checkpoint['critic_state_dict'])
