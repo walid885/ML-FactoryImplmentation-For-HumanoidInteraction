@@ -206,15 +206,26 @@ class DDPGAlgorithm(RLAlgorithmBase):
         """Load the model"""
         checkpoint = torch.load(filepath, map_location=self.device)
         
-        # Need to initialize networks first
-        if not self.networks_initialized:
-            # Try to infer dimensions from saved model
-            dummy_state = torch.randn(1, 4)  # Assume CartPole for testing
-            dummy_action = torch.randn(1, 1)
-            self._initialize_networks(4, 1, 1.0)
+        # Extract dimensions from saved model
+        actor_state_dict = checkpoint['actor_state_dict']
+        state_dim = actor_state_dict['net.0.weight'].shape[1]
+        action_dim = actor_state_dict['net.4.weight'].shape[0]  # Final layer
         
+        # Estimate max_action from actor weights (last layer uses tanh, so output is [-1,1])
+        # We'll use 1.0 as default since we multiply by max_action in forward pass
+        max_action = 1.0
+        
+        # Initialize networks with correct dimensions
+        self._initialize_networks(state_dim, action_dim, max_action)
+        
+        # Load the state dictionaries
         self.actor.load_state_dict(checkpoint['actor_state_dict'])
         self.critic.load_state_dict(checkpoint['critic_state_dict'])
-        self.actor_optimizer.load_state_dict(checkpoint['actor_optimizer'])
-        self.critic_optimizer.load_state_dict(checkpoint['critic_optimizer'])
+        
+        # Load optimizer states if available
+        if 'actor_optimizer' in checkpoint:
+            self.actor_optimizer.load_state_dict(checkpoint['actor_optimizer'])
+        if 'critic_optimizer' in checkpoint:
+            self.critic_optimizer.load_state_dict(checkpoint['critic_optimizer'])
+        
         self.is_trained = True
