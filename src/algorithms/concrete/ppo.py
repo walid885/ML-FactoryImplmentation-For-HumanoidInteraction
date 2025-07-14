@@ -42,7 +42,7 @@ class PPOAlgorithm(RLAlgorithmBase):
         self.eps_clip = config.get('eps_clip', 0.2)
         self.epochs = config.get('epochs', 4)
         self.batch_size = config.get('batch_size', 256)
-        self.num_workers = config.get('num_workers', 6)
+        self.num_workers = config.get('num_workers', 4)  # Optimal for Ryzen 5 5600H
         
         self.network = None
         self.optimizer = None
@@ -147,7 +147,7 @@ class PPOAlgorithm(RLAlgorithmBase):
         advantage = 0
         
         for t in reversed(range(len(rewards))):
-            advantage = rewards[t] + self.gamma * advantage * (1 - dones[t])
+            advantage = rewards[t] + self.gamma * advantage * (~dones[t]).float()
             advantages[t] = advantage
         
         return (advantages - advantages.mean()) / (advantages.std() + 1e-8)
