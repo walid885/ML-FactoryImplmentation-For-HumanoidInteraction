@@ -3,9 +3,9 @@ import sys
 from pathlib import Path
 import time
 
-# Add src to path - fix the relative path
-project_root = Path(__file__).parent.parent
-sys.path.append(str(project_root / "src"))
+# Add src to path - FIXED
+project_root = Path(__file__).parent
+sys.path.insert(0, str(project_root / "src"))
 
 def test_setup():
     """Quick test of the training setup"""

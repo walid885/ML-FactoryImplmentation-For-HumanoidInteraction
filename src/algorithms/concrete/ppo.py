@@ -4,8 +4,8 @@ import torch.optim as optim
 import numpy as np
 from typing import Dict, Any, List
 import gymnasium as gym
-from ..base import RLAlgorithmBase
-from ...utils.multicore import ParallelEnvironment, optimize_pytorch_multicore
+from algorithms.base import RLAlgorithmBase
+from utils.multicore import ParallelEnvironment, optimize_pytorch_multicore
 
 class PPONetwork(nn.Module):
     """Lightweight PPO network for fast training"""
